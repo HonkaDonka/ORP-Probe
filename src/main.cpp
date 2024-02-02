@@ -1,6 +1,9 @@
 #include <Arduino.h>
 
 #define ORPPROBE A0
+#define RLEDPIN 2
+#define GLEDPIN 3
+#define BLEDPIN 4
 
 long total = 0;               // Running total of readings
 int times = 0;                // Number of readings
@@ -12,7 +15,11 @@ unsigned long previousMillis = 0;
 const long interval = 1000;   // Interval in milliseconds (1 second)
 
 void setup() {
-  Serial.begin(9600);           // Initialize serial communication
+  Serial.begin(9600);         // Initialize serial communication
+
+  pinMode(RLEDPIN, OUTPUT);
+  pinMode(GLEDPIN, OUTPUT);
+  pinMode(BLEDPIN, OUTPUT);
 }
 
 void loop() {
@@ -43,6 +50,22 @@ void loop() {
     Serial.print("Calculated PPM: ");
     Serial.println(calcPPM);
 
+    // Set the LED color based on the PPM value
+    if (1000 < calcPPM && calcPPM < 2000) {
+      digitalWrite(RLEDPIN, HIGH);
+      digitalWrite(GLEDPIN, LOW);
+      digitalWrite(BLEDPIN, LOW);
+    }
+    if (1000 < calcPPM && calcPPM < 2000) {
+      digitalWrite(GLEDPIN, HIGH);
+      digitalWrite(RLEDPIN, LOW);
+      digitalWrite(BLEDPIN, LOW);
+    }
+    if (1000 < calcPPM && calcPPM < 2000) {
+      digitalWrite(BLEDPIN, HIGH);
+      digitalWrite(RLEDPIN, LOW);
+      digitalWrite(GLEDPIN, LOW);
+    }
 
     total = 0;
     times = 0;
