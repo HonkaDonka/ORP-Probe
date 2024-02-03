@@ -42,26 +42,33 @@ void loop() {
     float avgV = average * (5.0 / 1023.0) + vOffset;
 
     Serial.print("Average Voltage: ");
-    Serial.println(avgV, 2);
+    Serial.println(avgV);
     // Reset the total and times variables
 
-    float calcPPM = 10164 * (sqrt(avgV - 0.38) + 0.0048);
+    int calcPPM = 10164 * (sqrt(avgV - 0.38) + 0.0048) - 400;
 
+    // Adjust based on the specified PPM range
     Serial.print("Calculated PPM: ");
+    if (!(calcPPM == calcPPM)) {    // Checks if the value is NaN
+      calcPPM = 0;
+    } else if (calcPPM > 5000) {
+      calcPPM = 5000;
+    }
+    
     Serial.println(calcPPM);
 
     // Set the LED color based on the PPM value
-    if (1000 < calcPPM && calcPPM < 2000) {
+    if (0 < calcPPM && calcPPM <= 2000) {
       digitalWrite(RLEDPIN, HIGH);
       digitalWrite(GLEDPIN, LOW);
       digitalWrite(BLEDPIN, LOW);
     }
-    if (1000 < calcPPM && calcPPM < 2000) {
+    if (2000 < calcPPM && calcPPM <= 4000) {
       digitalWrite(GLEDPIN, HIGH);
       digitalWrite(RLEDPIN, LOW);
       digitalWrite(BLEDPIN, LOW);
     }
-    if (1000 < calcPPM && calcPPM < 2000) {
+    if (4000 < calcPPM && calcPPM <= 5000) {
       digitalWrite(BLEDPIN, HIGH);
       digitalWrite(RLEDPIN, LOW);
       digitalWrite(GLEDPIN, LOW);
